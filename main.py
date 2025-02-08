@@ -68,7 +68,7 @@ def setup_qa_chain(vectordb):
 
 def main():
     # Initialize
-    pdf_path = "./Gen AI -  Quickinsure.pdf"  # Replace with your PDF path
+    pdf_path = "./sample_pdf.pdf"
     persist_dir = "vector_db"
     
     # Create or load vector database
