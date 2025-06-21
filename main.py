@@ -1,11 +1,14 @@
 import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaEmbeddings
+from langchain_chroma import Chroma # type: ignore
+from langchain_ollama import OllamaLLM
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+
+# Global embedding model configuration
+embedding_model = "bge-large:335m-en-v1.5-fp16"
 
 def create_vector_db(pdf_path: str, persist_directory: str = "db"):
     """Create a vector database from the PDF document"""
@@ -22,7 +25,7 @@ def create_vector_db(pdf_path: str, persist_directory: str = "db"):
     texts = text_splitter.split_documents(documents)
     
     # Create embeddings and vector store
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    embeddings = OllamaEmbeddings(model=embedding_model)
     
     vectordb = Chroma.from_documents(
         documents=texts,
@@ -35,8 +38,8 @@ def create_vector_db(pdf_path: str, persist_directory: str = "db"):
 def setup_qa_chain(vectordb):
     """Set up the QA chain with custom prompt"""
     # Initialize Llama 3 model with strict context adherence
-    llm = Ollama(
-        model="mistral",
+    llm = OllamaLLM(
+        model="llama3.2",
         temperature=0.1
     )
     
@@ -77,7 +80,7 @@ def main():
         vectordb = create_vector_db(pdf_path, persist_dir)
     else:
         print("Loading existing vector database...")
-        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        embeddings = OllamaEmbeddings(model=embedding_model)
         vectordb = Chroma(persist_directory=persist_dir, embedding_function=embeddings)
     
     # Setup QA chain
