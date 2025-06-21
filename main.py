@@ -38,7 +38,7 @@ def setup_qa_chain(vectordb):
     """Set up the QA chain with custom prompt"""
     # Initialize Llama 3 model with strict context adherence
     llm = OllamaLLM(
-        model="llama3.2",
+        model="llama3.2:1b",
         temperature=0.1
     )
     
@@ -70,7 +70,7 @@ def setup_qa_chain(vectordb):
 
 def main():
     # Initialize
-    pdf_path = "Quickinsure Guide.pdf"
+    pdf_path = "./sample_pdf.pdf"
     persist_dir = "vector_db"
     
     # Create or load vector database
