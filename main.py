@@ -32,7 +32,6 @@ def create_vector_db(pdf_path: str, persist_directory: str = "db"):
         embedding=embeddings,
         persist_directory=persist_directory
     )
-    vectordb.persist()
     return vectordb
 
 def setup_qa_chain(vectordb):
@@ -71,7 +70,7 @@ def setup_qa_chain(vectordb):
 
 def main():
     # Initialize
-    pdf_path = "./sample_pdf.pdf"
+    pdf_path = "Quickinsure Guide.pdf"
     persist_dir = "vector_db"
     
     # Create or load vector database
@@ -92,7 +91,7 @@ def main():
         if question.lower() == 'quit':
             break
             
-        result = qa_chain({"query": question})
+        result = qa_chain.invoke({"query": question})
         print("\nAnswer:", result["result"])
         print("\nSources:")
         for doc in result["source_documents"]:
